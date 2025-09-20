@@ -49,6 +49,8 @@ export class Register {
   }
 
   submit() {
+    console.log("submitted");
+    console.log(this.registerForm.value);
 
     if (this.registerForm.invalid) return;
 
@@ -61,11 +63,14 @@ export class Register {
     formData.append('username', this.registerForm.value.username!);
     formData.append('email', this.registerForm.value.email!);
     formData.append('password', this.registerForm.value.password!);
-    formData.append('passwordConfirmation', this.registerForm.value.confirmPassword!);
+    formData.append('password_confirmation', this.registerForm.value.confirmPassword!);
 
     if (this.registerForm.value.avatar) {
       formData.append('avatar', this.registerForm.value.avatar);
     }
+
+    console.log('About to send registration request');
+
 
     this.auth.register(formData).subscribe({
 
@@ -75,6 +80,7 @@ export class Register {
       },
       error: (err) => {
         if (err.status === 422) {
+          console.log('Full error object:', err); 
           this.errorMessage = 'username or email already exists';
         } else {
           console.log('error occurred', err);
