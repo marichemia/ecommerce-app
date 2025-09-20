@@ -1,1 +1,58 @@
-<p>register works!</p>
+<form [formGroup]="registerForm" (ngSubmit)="submit()">
+
+     <!-- Username -->
+  <div>
+    <label>Username</label>
+    <input formControlName="username" type="text" placeholder="Enter username">
+    <div *ngIf="registerForm.get('username')?.touched && registerForm.get('username')?.invalid" style="color:red; font-size:12px">
+      <div *ngIf="registerForm.get('username')?.errors?.['required']">Username is required</div>
+      <div *ngIf="registerForm.get('username')?.errors?.['minlength']">Minimum 3 characters</div>
+    </div>
+  </div>
+
+    <!-- Email -->
+  <div>
+    <label>Email</label>
+    <input formControlName="email" type="email" placeholder="Enter email">
+    <div *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid" style="color:red; font-size:12px">
+      <div *ngIf="registerForm.get('email')?.errors?.['required']">Email is required</div>
+      <div *ngIf="registerForm.get('email')?.errors?.['email']">Enter a valid email</div>
+    </div>
+  </div>
+
+  <!-- Password -->
+  <div style="position:relative">
+    <label>Password</label>
+    <input [type]="passwordVisible ? 'text' : 'password'" formControlName="password" placeholder="Enter password">
+    <button type="button" (click)="togglePasswordVisibility()" style="position:absolute; right:5px; top:28px;">👁️</button>
+    <div *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid" style="color:red; font-size:12px">
+      <div *ngIf="registerForm.get('password')?.errors?.['required']">Password is required</div>
+      <div *ngIf="registerForm.get('password')?.errors?.['minlength']">Minimum 3 characters</div>
+    </div>
+  </div>
+
+  <!-- Confirm Password -->
+  <div>
+    <label>Confirm Password</label>
+    <input [type]="passwordVisible ? 'text' : 'password'" formControlName="confirmPassword" placeholder="Confirm password">
+  </div>
+
+  <!-- Avatar Upload -->
+  <div>
+    <label>Avatar</label>
+    <input type="file" (change)="avatarChange($event)">
+    <div *ngIf="avatarPreview" style="margin-top:5px; display:flex; align-items:center; gap:8px">
+      <img [src]="avatarPreview" alt="avatar preview" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">
+      <span>Upload new one</span>
+    </div>
+  </div>
+
+  <!-- Backend Error Message -->
+  <div *ngIf="errorMessage" style="color:red; font-size:12px">{{ errorMessage }}</div>
+
+  <!-- Submit Button -->
+  <button type="submit" [disabled]="registerForm.invalid" style="padding:8px; background-color:#4CAF50; color:white; border:none; cursor:pointer">
+    Register
+  </button>
+
+</form>
