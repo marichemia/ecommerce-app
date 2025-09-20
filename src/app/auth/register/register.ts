@@ -3,6 +3,8 @@ import { FormBuilder, ReactiveFormsModule, FormsModule, Validators } from '@angu
 import { CommonModule } from '@angular/common';
 import { Auth } from '../../services/auth';
 import { provideHttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';  
+
 
 
 
@@ -20,7 +22,7 @@ export class Register {
   avatarPreview: string | ArrayBuffer | null = null;
   errorMessage: string | null = '';
 
-  constructor(private fb: FormBuilder, private auth: Auth) { 
+  constructor(private fb: FormBuilder, private auth: Auth, private router: Router ) { 
     this.registerForm = this.fb.group({
 
     username: ['', [Validators.required, Validators.minLength(3)]],
@@ -77,6 +79,7 @@ export class Register {
       next: (res) => {
         console.log('registration complete', res);
         //redirect to login page
+        this.router.navigate(['/login']);
       },
       error: (err) => {
         if (err.status === 422) {
