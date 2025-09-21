@@ -1,1 +1,37 @@
-<p>product-list works!</p>
+<div class="filters">
+  <label>
+    Price From:
+    <input type="number" [(ngModel)]="priceFrom" (change)="onFilterChange()">
+  </label>
+  <label>
+    Price To:
+    <input type="number" [(ngModel)]="priceTo" (change)="onFilterChange()">
+  </label>
+
+  <label>
+    Sort By:
+    <select [(ngModel)]="sort" (change)="onSortChange()">
+      <option value="">Default</option>
+      <option value="price">Price (Low → High)</option>
+      <option value="-price">Price (High → Low)</option>
+      <option value="created_at">Newest</option>
+      <option value="-created_at">Oldest</option>
+    </select>
+  </label>
+</div>
+
+<div class="product-grid">
+  <div *ngFor="let product of products" class="product-card">
+    <img [src]="product.image" alt="{{ product.name }}">
+    <h3>{{ product.name }}</h3>
+    <p>Year: {{ product.release_year }}</p>
+    <p>Price: ${{ product.price }}</p>
+    <a [routerLink]="['/products', product.id]">View Details</a>
+  </div>
+</div>
+
+<div class="pagination">
+  <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+  <span>Page {{ currentPage }} of {{ lastPage }}</span>
+  <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === lastPage">Next</button>
+</div>
