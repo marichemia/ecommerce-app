@@ -5,9 +5,13 @@ import { Observable } from 'rxjs';
 export interface Product {
   id: number;
   name: string;
+  description: string;
   release_year: string;
-  image: string;
+  cover_image: string;
+  images: string[];
   price: number;
+  available_colors: string[];
+  available_sizes: string[];
 }
 
 export interface ProductListResponse {
@@ -56,6 +60,10 @@ export class ProductsService {
     }
 
     return this.http.get<ProductListResponse>(this.apiUrl, { params });
+  }
+
+  getProduct(id: number): Observable<Product> {
+    return this.http.get<Product>(`${this.apiUrl}/${id}`);
   }
 
 

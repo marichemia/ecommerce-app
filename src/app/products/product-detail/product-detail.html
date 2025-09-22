@@ -1,1 +1,40 @@
-<p>product-detail works!</p>
+<div *ngIf="product; else loading">
+  <h2>{{ product.name }}</h2>
+
+  <!-- Cover image -->
+  <img [src]="product.cover_image" alt="{{ product.name }}" width="300" />
+
+  <!-- Gallery images -->
+  <div class="gallery">
+    <h3>Gallery</h3>
+    <div class="images">
+      <img *ngFor="let img of product.images"
+           [src]="img"
+           alt="{{ product.name }}"
+           width="150" />
+    </div>
+  </div>
+
+  <p><strong>Price:</strong> ${{ product.price }}</p>
+  <p><strong>Released:</strong> {{ product.release_year }}</p>
+  <p>{{ product.description }}</p>
+
+  <!-- Options -->
+  <div>
+    <p><strong>Available Colors:</strong></p>
+    <ul>
+      <li *ngFor="let color of product.available_colors">{{ color }}</li>
+    </ul>
+  </div>
+
+  <div>
+    <p><strong>Available Sizes:</strong></p>
+    <ul>
+      <li *ngFor="let size of product.available_sizes">{{ size }}</li>
+    </ul>
+  </div>
+</div>
+
+<ng-template #loading>
+  <p>Loading product...</p>
+</ng-template>
