@@ -1,0 +1,26 @@
+.cart-panel {
+  width: 400px;
+  background: #fff;
+  height: 100%;
+  padding: 20px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  box-shadow: -2px 0 8px rgba(0,0,0,0.2);
+  overflow-y: auto;
+}
+
+.summary {
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+.checkout-btn {
+  width: 100%;
+  padding: 10px;
+  background: #f60;
+  color: white;
+  border: none;
+  margin-top: 20px;
+}
+

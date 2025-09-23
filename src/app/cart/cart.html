@@ -1,1 +1,27 @@
-<p>cart works!</p>
+<div class="cart-panel">
+  <h2>Shopping cart ({{ cartItems.length }})</h2>
+
+  <ng-container *ngIf="cartItems.length > 0; else emptyCart">
+    <app-cart-item
+      *ngFor="let item of cartItems"
+      [item]="item">
+    </app-cart-item>
+
+    <div class="summary">
+      <p>Items subtotal: ${{ subtotal }}</p>
+      <p>Delivery: $5</p>
+      <h3>Total: ${{ total }}</h3>
+    </div>
+
+    <button class="checkout-btn">Go to checkout</button>
+  </ng-container>
+
+  <ng-template #emptyCart>
+    <div class="empty-cart">
+      <h3>Ooops!</h3>
+      <p>You've got nothing in your cart just yet...</p>
+      <button routerLink="/products">Start shopping</button>
+    </div>
+  </ng-template>
+</div>
+

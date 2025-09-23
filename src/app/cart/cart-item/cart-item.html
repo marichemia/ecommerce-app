@@ -1,1 +1,16 @@
-<p>cart-item works!</p>
+<div class="cart-item">
+  <img [src]="item.product.cover_image" alt="{{ item.product.name }}" />
+
+  <div class="details">
+    <p class="name">{{ item.product.name }}</p>
+    <p class="price">${{ item.product.price }}</p>
+
+    <div class="quantity-controls">
+      <button (click)="decrease()">-</button>
+      <span>{{ item.quantity }}</span>
+      <button (click)="increase()">+</button>
+    </div>
+
+    <button class="remove-btn" (click)="removeItem()">Remove</button>
+  </div>
+</div>
