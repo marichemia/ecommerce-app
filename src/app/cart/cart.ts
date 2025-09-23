@@ -1,22 +1,35 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CartService, CartItem } from '../services/cart';
 import { CartItemComponent } from './cart-item/cart-item';
-import { NgIf } from '@angular/common';
+import { NgIf, NgFor } from '@angular/common';
+import { Observable, Subscription } from 'rxjs';
+import { CartPanelService } from '../services/cart-panel';
+import { AsyncPipe } from '@angular/common';
 
 
 
 @Component({
   selector: 'app-cart',
-  imports: [CartItemComponent, NgIf],
+  imports: [CartItemComponent, NgIf, NgFor, AsyncPipe],
   templateUrl: './cart.html',
   styleUrl: './cart.scss'
 })
-export class Cart {
+export class Cart implements OnInit, OnDestroy {
 
   cartItems: CartItem[] = [];
-  totalPrice: number = 0;
+  cartSub?: Subscription;
+  isOpen$!: Observable<boolean>;
 
-  constructor(private cartService: CartService) {
+  ngOnInit() {
+    this.isOpen$ = this.panelService.isOpen$;
+
+    this.cartSub = this.cartService.cartItems$.subscribe(items => {
+      this.cartItems = items;
+    });
+  }
+
+
+  constructor(private cartService: CartService, private panelService: CartPanelService) {
     this.cartService.cartItems$.subscribe(items => {
       this.cartItems = items;
     });
@@ -28,6 +41,14 @@ export class Cart {
 
   get total(): number {
     return this.subtotal + 5;
+  }
+
+  closePanel() {
+    this.panelService.close();
+  }
+
+  ngOnDestroy() {
+    this.cartSub?.unsubscribe();
   }
 
 }

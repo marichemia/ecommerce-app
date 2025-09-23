@@ -1,1 +1,19 @@
-<p>header works!</p>
+<header class="app-header">
+  <div class="left">
+    <a routerLink="/"> 
+      <img src="" alt="Home" class="logo" />
+    </a>
+  </div>
+
+  <nav class="right">
+
+    <!-- Cart button -->
+    <button class="cart-btn" (click)="toggleCart()" aria-label="Open cart">
+      🛒
+      <span class="badge" *ngIf="(itemCount$ | async) as count; else noBadge">
+        {{ count }}
+      </span>
+      <ng-template #noBadge></ng-template>
+    </button>
+  </nav>
+</header>

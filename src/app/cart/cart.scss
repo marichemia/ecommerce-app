@@ -1,26 +1,35 @@
+.cart-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 999; /* behind cart panel */
+}
+
 .cart-panel {
-  width: 400px;
-  background: #fff;
-  height: 100%;
-  padding: 20px;
   position: fixed;
   right: 0;
   top: 0;
-  box-shadow: -2px 0 8px rgba(0,0,0,0.2);
+  width: 380px;
+  height: 100vh;
+  background: #fff;
+  box-shadow: -10px 0 30px rgba(0,0,0,0.2);
+  padding: 20px;
+  z-index: 1000; /* above backdrop */
   overflow-y: auto;
+
+  /*entrance animation */
+  transform: translateX(0); /* with *ngIf the panel visible */
+  transition: transform 240ms ease;
 }
 
-.summary {
-  margin-top: 20px;
-  font-weight: bold;
-}
-
-.checkout-btn {
-  width: 100%;
-  padding: 10px;
-  background: #f60;
-  color: white;
+.close-x {
+  position: absolute;
+  left: 12px;
+  top: 12px;
   border: none;
-  margin-top: 20px;
+  background: transparent;
+  font-size: 21px;
+  cursor: pointer;
 }
+
 

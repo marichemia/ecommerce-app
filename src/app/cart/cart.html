@@ -1,3 +1,9 @@
+
+<div class="cart-backdrop" *ngIf="isOpen$ | async" (click)="closePanel()"></div>
+
+
+<aside class="cart-panel" *ngIf="isOpen$ | async" role="dialog" aria-modal="true" aria-label="Shopping cart">
+<button class="close-x" (click)="closePanel()" aria-label="Close cart">×</button>
 <div class="cart-panel">
   <h2>Shopping cart ({{ cartItems.length }})</h2>
 
@@ -24,4 +30,5 @@
     </div>
   </ng-template>
 </div>
+</aside>
 
