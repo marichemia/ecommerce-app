@@ -11,7 +11,7 @@ export interface CartItem {
   providedIn: 'root'
 })
 
-export class Cart {
+export class CartService {
   private cartItems: CartItem[] = [];
   private cartItemsSubject = new BehaviorSubject<CartItem[]>([]);
 
