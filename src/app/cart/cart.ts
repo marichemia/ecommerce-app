@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CartService, CartItem } from '../services/cart';
-import { CartItemComponent } from './cart-item/cart-item';
+import { CartItemComponent } from '../shared/cart-item/cart-item';
 import { NgIf, NgFor } from '@angular/common';
 import { Observable, Subscription } from 'rxjs';
 import { CartPanelService } from '../services/cart-panel';
