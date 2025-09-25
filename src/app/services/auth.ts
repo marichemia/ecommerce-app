@@ -30,7 +30,10 @@ export class Auth {
   }
 
    getToken() {
-    return localStorage.getItem('token');
+    if (typeof window !== 'undefined' && window.localStorage) {
+      return localStorage.getItem('token');
+    }
+    return null; 
   }
 
  

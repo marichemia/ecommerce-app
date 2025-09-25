@@ -1,0 +1,10 @@
+.checkout-page {
+  padding: 2rem;
+}
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* form wider than summary */
+  gap: 2rem;
+  align-items: flex-start;
+}

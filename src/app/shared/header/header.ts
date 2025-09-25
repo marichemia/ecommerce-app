@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CartPanelService } from '../../services/cart-panel';
-import { CartService } from '../../services/cart'; 
+import { CartApiItem, CartService } from '../../services/cart'; 
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CartItem } from '../../services/cart';
@@ -25,7 +25,7 @@ export class Header implements OnInit {
 
    ngOnInit() {
     this.itemCount$ = this.cartService.cartItems$.pipe(
-      map((items: CartItem[]) => items.reduce((s, i) => s + i.quantity, 0))
+      map((items: CartApiItem[]) => items.reduce((sum, item) => sum + item.quantity, 0))
     );
   }
 

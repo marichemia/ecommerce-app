@@ -1,34 +1,39 @@
-
 <div class="cart-backdrop" *ngIf="isOpen$ | async" (click)="closePanel()"></div>
 
+<aside class="cart-panel" 
+       *ngIf="isOpen$ | async" 
+       role="dialog" 
+       aria-modal="true" 
+       aria-label="Shopping cart"
+       (click)="$event.stopPropagation()"> <!-- Prevent clicks from hitting the backdrop -->
 
-<aside class="cart-panel" *ngIf="isOpen$ | async" role="dialog" aria-modal="true" aria-label="Shopping cart">
-<button class="close-x" (click)="closePanel()" aria-label="Close cart">×</button>
-<div class="cart-panel">
-  <h2>Shopping cart ({{ cartItems.length }})</h2>
+  <button class="close-x" (click)="closePanel()" aria-label="Close cart">×</button>
 
-  <ng-container *ngIf="cartItems.length > 0; else emptyCart">
-    <app-cart-item
-      *ngFor="let item of cartItems"
-      [item]="item">
-    </app-cart-item>
+  <div class="cart-panel-content">
+    <h2>Shopping cart ({{ cartItems.length }})</h2>
 
-    <div class="summary">
-      <p>Items subtotal: ${{ subtotal }}</p>
-      <p>Delivery: $5</p>
-      <h3>Total: ${{ total }}</h3>
-    </div>
+    <ng-container *ngIf="cartItems.length > 0; else emptyCart">
+      <app-cart-item
+        *ngFor="let item of cartItems"
+        [item]="item">
+      </app-cart-item>
 
-    <button class="checkout-btn">Go to checkout</button>
-  </ng-container>
+      <div class="summary">
+        <p>Items subtotal: ${{ subtotal }}</p>
+        <p>Delivery: $5</p>
+        <h3>Total: ${{ total }}</h3>
+      </div>
 
-  <ng-template #emptyCart>
-    <div class="empty-cart">
-      <h3>Ooops!</h3>
-      <p>You've got nothing in your cart just yet...</p>
-      <button routerLink="/products">Start shopping</button>
-    </div>
-  </ng-template>
-</div>
+      <button class="checkout-btn" (click)="goToCheckout()">Go to checkout</button>
+    </ng-container>
+
+    <ng-template #emptyCart>
+      <div class="empty-cart">
+        <h3>Ooops!</h3>
+        <p>You've got nothing in your cart just yet...</p>
+        <button routerLink="/products">Start shopping</button>
+      </div>
+    </ng-template>
+  </div>
 </aside>
 

@@ -1,10 +1,24 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, tap } from 'rxjs';
 import { Product } from './products';
+import { HttpClient } from '@angular/common/http';
 
 export interface CartItem {
   product: Product;
   quantity: number;
+}
+
+export interface CartApiItem {
+  id?: number;               
+  name: string;
+  description?: string;
+  release_date?: string;
+  cover_image?: string;
+  images?: string[];
+  price: number;
+  quantity: number;         
+  total_price?: number;
+  brand?: { id: number; name: string; image?: string; };
 }
 
 @Injectable({
@@ -12,50 +26,55 @@ export interface CartItem {
 })
 
 export class CartService {
+
+  private apiUrl = 'https://api.redseam.redberryinternship.ge/api/cart';
+
   private cartItems: CartItem[] = [];
-  private cartItemsSubject = new BehaviorSubject<CartItem[]>([]);
+  private cartItemsSubject = new BehaviorSubject<CartApiItem[]>([]);
 
   cartItems$ = this.cartItemsSubject.asObservable();
 
-  addToCart(product: Product, quantity: number = 1): void {
-    const existingItem = this.cartItems.find(
-      (item) => item.product.id === product.id
+  constructor(private http: HttpClient) { }
+
+  loadCart() {
+    return this.http.get<CartApiItem[]>(this.apiUrl).pipe(
+      tap(items => this.cartItemsSubject.next(items))
     );
-
-    if (existingItem) {
-      existingItem.quantity += quantity;
-    } else {
-      this.cartItems.push({ product, quantity });
-    }
-
-    this.cartItemsSubject.next(this.cartItems);
   }
 
-  removeFromCart(productId: number): void {
-    this.cartItems = this.cartItems.filter(
-      (item) => item.product.id !== productId
+  addToCart(productId: number,color: string,size: string, quantity: number = 1) {
+     return this.http.post<CartApiItem>(
+      `${this.apiUrl}/products/${productId}`,
+      { color, size, quantity }
+    ).pipe(
+      tap(() => this.loadCart().subscribe()) // refresh local state
     );
-    this.cartItemsSubject.next(this.cartItems);
   }
 
-  clearCart(): void {
-    this.cartItems = [];
-    this.cartItemsSubject.next(this.cartItems);
+  changeQuantity(productId: number, quantity: number) {
+    return this.http.patch<CartApiItem>(
+      `${this.apiUrl}/products/${productId}`,
+      { quantity }
+    ).pipe(
+      tap(() => this.loadCart().subscribe())
+    );
   }
 
-  updateQuantity(productId: number, quantity: number): void {
-    const item = this.cartItems.find((item) => item.product.id === productId);
-    if (item) {
-      item.quantity = quantity;
-      this.cartItemsSubject.next(this.cartItems);
-    }
+  removeFromCart(productId: number) {
+    return this.http.delete(
+      `${this.apiUrl}/products/${productId}`
+    ).pipe(
+      tap(() => this.loadCart().subscribe())
+    );
   }
 
-  getCartItems(): CartItem[] {
-    return this.cartItems;
+  checkout() {
+    return this.http.post(`${this.apiUrl}/checkout`, {}).pipe(
+      tap(() => this.cartItemsSubject.next([])) 
+    );
   }
 
   getTotal(): number {
-  return this.cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
+  return this.cartItemsSubject.value.reduce((acc, item) => acc + item.price * item.quantity, 0);
 }
 }

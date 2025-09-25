@@ -41,7 +41,7 @@ export class Login {
         console.log('login success', res);
         localStorage.setItem('token', res.token);
 
-        this.router.navigate(['/']);
+        this.router.navigate(['/products']);
       },
       error: (err) => {
         if (err.status === 401) {
