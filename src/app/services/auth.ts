@@ -14,12 +14,14 @@ export class Auth {
   public currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient, private cartService: CartService) { 
-    const raw = localStorage.getItem('user');
-    if (raw) {
-      try {
-        this.currentUserSubject.next(JSON.parse(raw));
-      } catch {
-        this.currentUserSubject.next(null);
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const raw = localStorage.getItem('user');
+      if (raw) {
+        try {
+          this.currentUserSubject.next(JSON.parse(raw));
+        } catch {
+          this.currentUserSubject.next(null);
+        }
       }
     }
   }

@@ -15,5 +15,30 @@
       </span>
       <ng-template #noBadge></ng-template>
     </button>
+    <ng-container *ngIf="(user$ | async) as user; else guestLinks">
+      <div class="user-area">
+        <button class="avatar-btn" (click)="toggleDropdown($event)" [attr.aria-expanded]="dropdownOpen">
+          <img class="avatar-small" [src]="user.avatar || '/assets/default-avatar.png'" alt="avatar"/>
+        </button>
+
+        <div class="user-dropdown" *ngIf="dropdownOpen">
+          <div class="user-info">
+            <div class="meta">
+              <div class="name">{{ user.name || user.username }}</div>
+              <div class="email" *ngIf="user.email">{{ user.email }}</div>
+            </div>
+          </div>
+
+          <hr />
+
+          <button class="dropdown-item" (click)="logout()">Logout</button>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #guestLinks>
+      <a routerLink="/login" class="link">Login</a>
+      <a routerLink="/register" class="link">Register</a>
+    </ng-template>
   </nav>
 </header>
