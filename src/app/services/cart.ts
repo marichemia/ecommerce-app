@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, tap } from 'rxjs';
+import { BehaviorSubject, tap, catchError, of } from 'rxjs';
 import { Product } from './products';
 import { HttpClient } from '@angular/common/http';
 
@@ -37,17 +37,25 @@ export class CartService {
   constructor(private http: HttpClient) { }
 
   loadCart() {
-    return this.http.get<CartApiItem[]>(this.apiUrl).pipe(
-      tap(items => this.cartItemsSubject.next(items))
-    );
-  }
+  return this.http.get<CartApiItem[]>(this.apiUrl).pipe(
+    tap(items => this.cartItemsSubject.next(items)),
+    catchError(err => {
+      if (err.status === 401) {
+        console.warn('Not logged in yet, skipping cart load');
+        this.cartItemsSubject.next([]); 
+        return of([]); 
+      }
+      throw err; 
+    })
+  );
+}
 
   addToCart(productId: number,color: string,size: string, quantity: number = 1) {
      return this.http.post<CartApiItem>(
       `${this.apiUrl}/products/${productId}`,
       { color, size, quantity }
     ).pipe(
-      tap(() => this.loadCart().subscribe()) // refresh local state
+      tap(() => this.loadCart().subscribe()) 
     );
   }
 
@@ -75,6 +83,10 @@ export class CartService {
   }
 
   getTotal(): number {
-  return this.cartItemsSubject.value.reduce((acc, item) => acc + item.price * item.quantity, 0);
-}
+    return this.cartItemsSubject.value.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  }
+
+  clearCart() {
+    this.cartItemsSubject.next([]);
+  }
 }
