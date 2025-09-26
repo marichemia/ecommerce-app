@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { CartService } from './cart';
 
 @Injectable({
@@ -9,28 +9,44 @@ import { CartService } from './cart';
 export class Auth {
   
   private apiUrl = 'https://api.redseam.redberryinternship.ge/api';
+  
+  private currentUserSubject = new BehaviorSubject<any | null>(null);
+  public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient, private cartService: CartService) { }
+  constructor(private http: HttpClient, private cartService: CartService) { 
+    const raw = localStorage.getItem('user');
+    if (raw) {
+      try {
+        this.currentUserSubject.next(JSON.parse(raw));
+      } catch {
+        this.currentUserSubject.next(null);
+      }
+    }
+  }
 
   register(formData: FormData): Observable<{ token: string, user: any }> {
-    return this.http.post<{ token: string, user: any }>(`${this.apiUrl}/register`, formData)
+    return this.http.post<any>(`${this.apiUrl}/register`, formData);
+  }
+
+   login(email: string, password: string): Observable<{ token: string, user?: any }> {
+    return this.http.post<{ token: string, user?: any }>(`${this.apiUrl}/login`, { email, password })
       .pipe(
         tap(response => {
-          localStorage.setItem('token', response.token)
-           this.cartService.loadCart().subscribe();
+          localStorage.setItem('token', response.token);
+          if (response.user) {
+            localStorage.setItem('user', JSON.stringify(response.user));
+            this.currentUserSubject.next(response.user);
+          }
+          this.cartService.loadCart().subscribe();
         })
       );
   }
 
-  login(email: string, password: string): Observable<{ token: string }> {
-    return this.http.post<{ token: string }>(`${this.apiUrl}/login`, { email, password })
-      .pipe(
-        tap(response => localStorage.setItem('token', response.token))
-      );
-  }
-
-   logout() {
+  logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    this.currentUserSubject.next(null);
+    this.cartService.clearCart();
   }
 
    getToken() {
@@ -38,6 +54,10 @@ export class Auth {
       return localStorage.getItem('token');
     }
     return null; 
+  }
+
+  getCurrentUser() {
+    return this.currentUserSubject.value;
   }
 
  
