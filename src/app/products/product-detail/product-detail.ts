@@ -40,27 +40,19 @@ export class ProductDetail implements OnInit {
   addToCart(): void {
     if (!this.product) return;
 
-  this.cartService.cartItems$.subscribe(cartItems => {
-    const existingItem = cartItems.find(item => 
-      item.id === this.product!.id 
-    );
-
-    let finalQuantity = this.quantity;
-
-    if (existingItem) {
-      finalQuantity += existingItem.quantity;
+  this.cartService.addToCart(
+    this.product.id,
+    this.selectedColor,
+    this.selectedSize,
+    this.quantity // ✅ always send the chosen quantity, not stacked
+  ).subscribe({
+    next: createdItem => {
+      console.log('Added to cart', createdItem);
+    },
+    error: err => {
+      console.error('Add to cart failed', err);
     }
-
-    this.cartService.addToCart(this.product!.id, this.selectedColor, this.selectedSize, finalQuantity)
-      .subscribe({
-        next: createdItem => {
-          console.log('Added to cart', createdItem);
-        },
-        error: err => {
-          console.error('Add to cart failed', err);
-        }
-      });
-  }).unsubscribe(); 
+  }); 
   }
 
 }
